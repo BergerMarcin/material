@@ -1,46 +1,33 @@
-import {RolesTypes, Scalars, UsersMvc} from "../src/graphql/types";
-import {useState} from "react";
+import { useIndexQuery } from "../src/graphql/types";
+import { gql } from "@apollo/client";
+import User from "../components/User";
+import { useState, ChangeEvent } from "react";
+
+gql`
+    query Index {
+        allUsers {
+            id
+        }
+    }
+`;
 
 const Index = () => {
-  const [users] = useState([
-    {
-      id: "1",
-      firstName: "Marcin",
-      lastName: "Berger",
-      email: "marcin.berger@wp.pl",
-      password: "1234",
-      role: "SUPERADMIN",
-      phone: "43523452345",
-      city: "Błonie",
-      rate: 5.0,
-      createdAt: 6932816147687407617,
-      updatedAt: 6932947852859541466
-    },
-    {
-      id: "2",
-      firstName: "Marian",
-      lastName: "Berger",
-      email: "marian.berger@wp.pl",
-      password: "1234",
-      role: "ADMIN",
-      phone: "433452345",
-      city: "Warszawa",
-      rate: 4.3,
-      createdAt: 6932846147687407617,
-      updatedAt: 6932997852859541466
-    },
-  ] as UsersMvc[]);
-  const usersDPO = users.map((u, i) => (
-    <tr key={u.id}>
-      <td>{i + 1}</td>
-      <td>{u.firstName}</td>
-      <td>{u.lastName}</td>
-      <td>{u.email}</td>
-    </tr>
+  const { data, loading } = useIndexQuery();
+
+  const allUsers = data?.allUsers
+    ?.slice()
+    .sort((a, b) => a.id.localeCompare(b.id));
+
+  const allUsersElements = allUsers?.map((u) => (
+    <User id={u.id} key={u.id} />
   ));
-  return users.length > 0 ? (
-    <table>
-      <tbody>{usersDPO}</tbody>
+
+  if (!loading) console.log("Index. allUsers: ", allUsers);
+  if (!loading) console.log("Index. data: ", data);
+
+  return loading ? null : allUsersElements.length > 0 ? (
+    <table border={3}>
+      <tbody>{allUsersElements}</tbody>
     </table>
   ) : (
     <div>Oops! No users!</div>

@@ -62,7 +62,7 @@ type UsersMVC {
     role: RolesTypes!
     phone: String!
     city: String!
-    rate: Int!
+    rate: Float!
     createdAt: Date!
     updatedAt: Date!
 }
