@@ -7,9 +7,10 @@ schema:
 generates:
   ./src/graphql/types.tsx:
     plugins:
-      - typescript
+      - typescript              # plugin to generate types (basic DB schemas)
+      - typescript-resolvers    # plugin to generate resolvers (queries)
     config:
-      withHooks: true # We will be using React Hooks so we disable React Components
+      withHooks: true           # We will be using React Hooks so we disable React Components
       withHOC: false
       withComponent: false
       skipTypename: true
