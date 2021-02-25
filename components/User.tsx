@@ -1,5 +1,6 @@
 import { gql } from "@apollo/client";
-import { useUserQuery } from "../src/graphql/types";
+import {useUpdateUserDataMutation, useUserQuery} from "../src/graphql/types";
+import {ChangeEvent, useEffect, useState} from "react";
 
 interface Props {
   id: String;
@@ -12,7 +13,19 @@ gql`
             lastName
             email
             phone
-            rate
+            ratesValue
+            ratesCount
+        }
+    }
+    mutation updateUserData($id: ID!, $data: UpdateUserDataInput!) {
+        updateUserData(id: $id, data: $data) {
+            firstName
+            lastName
+            email
+            password
+            phone
+            city
+            createdAt
         }
     }
 `;
@@ -25,16 +38,40 @@ const User = (props: Props) => {
       id,
     },
   });
-  if (!loading) console.log(data);
+  //Todo: ASK DANIEL about below incredible action
+  const [updateUser] = useUpdateUserDataMutation();
+
+  const [localPhone, setLocalPhone] = useState('');
+  useEffect(() => {
+    setLocalPhone(data?.User?.phone || '');
+  }, [data?.User?.phone]);
+  const onChangeHandlerLocalPhone = (e: ChangeEvent) => {
+    const phone = (e.target as HTMLInputElement).value;
+    setLocalPhone(phone);
+    console.log('User.tsx. phone: ', phone)
+    console.log('User.tsx. localPhone: ', localPhone)
+    updateUser({
+      variables: {
+        id,
+        data: {
+          ...data.User,
+          phone
+        },
+      },
+    });
+  };
+
   let content = <td colSpan={5}>Loading ...</td>;
   if (!loading && data) {
-    const { firstName, lastName, email, phone, rate } = data.User;
+    const { firstName, lastName, email, phone } = data.User
+    const rate = data.User.ratesCount > 0
+      ? Math.round(100 * data.User.ratesValue / data.User.ratesCount) / 100 : 'brak ocen'
     content = (
       <>
         <td>{firstName}</td>
         <td>{lastName}</td>
         <td>{email}</td>
-        <td>{phone}</td>
+        <td><input type="text" value={localPhone} onChange={onChangeHandlerLocalPhone}/></td>
         <td>{rate}</td>
       </>
     );

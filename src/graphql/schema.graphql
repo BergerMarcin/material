@@ -1,7 +1,16 @@
+# graphql-codegen demand only one `schema.graphql` file (see: https://github.com/dotansimha/graphql-code-generator/issues/1292)
+
 enum RolesTypes {SUPERADMIN, ADMIN, USER}
 
+# TODO: import Date from:
+# GraphQLTimestamp.js
+# https://github.com/excitement-engineer/graphql-iso-date
+# or https://www.graphql-tools.com/docs/scalars/
+# or https://www.apollographql.com/docs/apollo-server/schema/schema/#input-types
 scalar Date
 
+
+# ---------------------------------------------------- AuctionItems ----------------------------------------------------
 type AuctionItemsMVC {
     id: ID!
     auction_id: ID!
@@ -14,7 +23,8 @@ type AuctionItemsMVC {
     createdAt: Date!
 }
 
-type AuctionMVC {
+# ------------------------------------------------------ Auctions ------------------------------------------------------
+type AuctionsMVC {
     id: ID!
     user_id: ID!
     name: String!
@@ -25,6 +35,7 @@ type AuctionMVC {
     createdAt: Date!
 }
 
+# ------------------------------------------------------ Currency ------------------------------------------------------
 type CurrencyMVC {
     id: ID!
     name: String!
@@ -35,6 +46,7 @@ type CurrencyMVC {
     updatedAt: Date!
 }
 
+# --------------------------------------------------- DeliveryTypes ----------------------------------------------------
 type DeliveryTypesMVC {
     id: ID!
     user_id: ID!
@@ -44,6 +56,7 @@ type DeliveryTypesMVC {
     currencyId: ID!
 }
 
+# ------------------------------------------------------ Opinions ------------------------------------------------------
 type OpinionsMVC {
     id: ID!
     auction_id: ID!
@@ -53,6 +66,7 @@ type OpinionsMVC {
     createdAt: Date!
 }
 
+# -------------------------------------------------------- Users -------------------------------------------------------
 type UsersMVC {
     id: ID!
     firstName: String!
@@ -62,12 +76,48 @@ type UsersMVC {
     role: RolesTypes!
     phone: String!
     city: String!
-    rate: Float!
+    ratesValue: Int!,
+    ratesCount: Int!,
     createdAt: Date!
-    updatedAt: Date!
+    updatedAt: Date
 }
 
 type Query {
     allUsers: [UsersMVC!]!
-    User(id: ID!): UsersMVC
+    User(id: ID!): UsersMVC!
+}
+
+type Mutation {
+    createUser(data: CreateUserDataInput!): UsersMVC!
+    updateUserData(id: ID!, data: UpdateUserDataInput!): UsersMVC
+    updateUserPassword(id: ID!, data: UpdateUserPasswordInput!): UsersMVC
+    updateUserRate(id: ID!, data: UpdateUserRateInput!): UsersMVC
+}
+
+input CreateUserDataInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    phone: String!
+    city: String!
+    createdAt: Date!
+}
+
+input UpdateUserDataInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    city: String!
+    updatedAt: Date!
+}
+
+input UpdateUserPasswordInput {
+    password: String!
+}
+
+input UpdateUserRateInput {
+    ratesValue: Int!,
+    ratesCount: Int!
 }

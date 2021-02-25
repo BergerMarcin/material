@@ -7,7 +7,7 @@ import {
 import fetch from "node-fetch"; // node-fetch here to allow SSR
 
 const client = new ApolloClient({
-  link: new HttpLink({ uri: "/api/graphql", fetch: fetch}),
+  link: new HttpLink({ uri: "/api/graphql", fetch: fetch}),   // link: new HttpLink({ uri: "/api/graphql", fetch: fetch as fetch}),
   cache: new InMemoryCache(),
 });
 

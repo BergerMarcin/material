@@ -1,6 +1,6 @@
-import { Resolvers, UsersMvc } from "./types.tsx";
+import {Resolvers, UsersMvc} from "./types.tsx";
 
-const store: UsersMvc[] = [
+let store: UsersMvc[] = [
   {
     id: "1",
     firstName: "Marcin",
@@ -10,7 +10,8 @@ const store: UsersMvc[] = [
     role: "SUPERADMIN",
     phone: "43523452345",
     city: "Błonie",
-    rate: 5.0,
+    ratesValue: 5,
+    ratesCount: 1,
     createdAt: 6932816147687407617,
     updatedAt: 6932947852859541466
   },
@@ -23,7 +24,8 @@ const store: UsersMvc[] = [
     role: "ADMIN",
     phone: "433452345",
     city: "Warszawa",
-    rate: 4.3,
+    ratesValue: 18,
+    ratesCount: 5,
     createdAt: 6932846147687407617,
     updatedAt: 6932997852859541466
   },
@@ -36,18 +38,44 @@ const store: UsersMvc[] = [
     role: "ADMIN",
     phone: "433452345",
     city: "Ryki",
-    rate: 4.9,
+    ratesValue: 19,
+    ratesCount: 5,
     createdAt: 6933046147687407617,
     updatedAt: 6933197852859541466
   }
-];
+]
 
 const resolvers: Resolvers = {
   Query: {
     allUsers: () => store,
-    User: (_: any, { id }) =>
-      store.find((u) => u.id  === id),
+
+    User: (_: any, {id}) =>
+      store.find((u) => u.id === id),
   },
-};
+
+  Mutation: {
+    createUser: (_: any, { data }) => {
+      let newUser = {} as UsersMvc;
+      newUser = {
+        ...newUser,
+        id: Math.floor(Math.random() * 10000).toString(),
+        ...data
+      }
+      store = store.concat(newUser);
+      return newUser;
+    },
+
+    updateUserData: (_: any, {id, data}) => {
+      const user = store.find(u => u.id === id);
+      if (user) {
+        store = store.filter(u => u.id !== id).concat({
+          ...user,
+          ...data
+        });
+      }
+      return user;
+    }
+  }
+}
 
 export default resolvers;

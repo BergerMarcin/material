@@ -2,6 +2,7 @@ overwrite: true
 hooks:
   afterAllFileWrite:
     - prettier --write
+#watch: true    # show changes (slow down generation process significantly)
 schema:
   - ./src/graphql/schema.graphql
 generates:

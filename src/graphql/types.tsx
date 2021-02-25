@@ -46,7 +46,7 @@ export type AuctionItemsMvc = {
   createdAt: Scalars["Date"];
 };
 
-export type AuctionMvc = {
+export type AuctionsMvc = {
   id: Scalars["ID"];
   user_id: Scalars["ID"];
   name: Scalars["String"];
@@ -94,18 +94,73 @@ export type UsersMvc = {
   role: RolesTypes;
   phone: Scalars["String"];
   city: Scalars["String"];
-  rate: Scalars["Int"];
+  ratesValue: Scalars["Int"];
+  ratesCount: Scalars["Int"];
   createdAt: Scalars["Date"];
-  updatedAt: Scalars["Date"];
+  updatedAt?: Maybe<Scalars["Date"]>;
 };
 
 export type Query = {
   allUsers: Array<UsersMvc>;
-  User?: Maybe<UsersMvc>;
+  User: UsersMvc;
 };
 
 export type QueryUserArgs = {
   id: Scalars["ID"];
+};
+
+export type Mutation = {
+  createUser: UsersMvc;
+  updateUserData?: Maybe<UsersMvc>;
+  updateUserPassword?: Maybe<UsersMvc>;
+  updateUserRate?: Maybe<UsersMvc>;
+};
+
+export type MutationCreateUserArgs = {
+  data: CreateUserDataInput;
+};
+
+export type MutationUpdateUserDataArgs = {
+  id: Scalars["ID"];
+  data: UpdateUserDataInput;
+};
+
+export type MutationUpdateUserPasswordArgs = {
+  id: Scalars["ID"];
+  data: UpdateUserPasswordInput;
+};
+
+export type MutationUpdateUserRateArgs = {
+  id: Scalars["ID"];
+  data: UpdateUserRateInput;
+};
+
+export type CreateUserDataInput = {
+  firstName: Scalars["String"];
+  lastName: Scalars["String"];
+  email: Scalars["String"];
+  password: Scalars["String"];
+  phone: Scalars["String"];
+  city: Scalars["String"];
+  createdAt: Scalars["Date"];
+};
+
+export type UpdateUserDataInput = {
+  firstName: Scalars["String"];
+  lastName: Scalars["String"];
+  email: Scalars["String"];
+  phone: Scalars["String"];
+  city: Scalars["String"];
+  updatedAt: Scalars["Date"];
+};
+
+export type UpdateUserPasswordInput = {
+  password: Scalars["String"];
+};
+
+export type UpdateUserRateInput = {
+  ratesValue: Scalars["Int"];
+  ratesCount: Scalars["Int"];
 };
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -230,13 +285,18 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars["ID"]>;
   Float: ResolverTypeWrapper<Scalars["Float"]>;
   String: ResolverTypeWrapper<Scalars["String"]>;
-  AuctionMVC: ResolverTypeWrapper<AuctionMvc>;
+  AuctionsMVC: ResolverTypeWrapper<AuctionsMvc>;
   CurrencyMVC: ResolverTypeWrapper<CurrencyMvc>;
   DeliveryTypesMVC: ResolverTypeWrapper<DeliveryTypesMvc>;
   OpinionsMVC: ResolverTypeWrapper<OpinionsMvc>;
   Int: ResolverTypeWrapper<Scalars["Int"]>;
   UsersMVC: ResolverTypeWrapper<UsersMvc>;
   Query: ResolverTypeWrapper<{}>;
+  Mutation: ResolverTypeWrapper<{}>;
+  CreateUserDataInput: CreateUserDataInput;
+  UpdateUserDataInput: UpdateUserDataInput;
+  UpdateUserPasswordInput: UpdateUserPasswordInput;
+  UpdateUserRateInput: UpdateUserRateInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
 };
 
@@ -247,13 +307,18 @@ export type ResolversParentTypes = {
   ID: Scalars["ID"];
   Float: Scalars["Float"];
   String: Scalars["String"];
-  AuctionMVC: AuctionMvc;
+  AuctionsMVC: AuctionsMvc;
   CurrencyMVC: CurrencyMvc;
   DeliveryTypesMVC: DeliveryTypesMvc;
   OpinionsMVC: OpinionsMvc;
   Int: Scalars["Int"];
   UsersMVC: UsersMvc;
   Query: {};
+  Mutation: {};
+  CreateUserDataInput: CreateUserDataInput;
+  UpdateUserDataInput: UpdateUserDataInput;
+  UpdateUserPasswordInput: UpdateUserPasswordInput;
+  UpdateUserRateInput: UpdateUserRateInput;
   Boolean: Scalars["Boolean"];
 };
 
@@ -286,9 +351,9 @@ export type AuctionItemsMvcResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type AuctionMvcResolvers<
+export type AuctionsMvcResolvers<
   ContextType = any,
-  ParentType extends ResolversParentTypes["AuctionMVC"] = ResolversParentTypes["AuctionMVC"]
+  ParentType extends ResolversParentTypes["AuctionsMVC"] = ResolversParentTypes["AuctionsMVC"]
 > = {
   id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
   user_id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
@@ -369,9 +434,10 @@ export type UsersMvcResolvers<
   role?: Resolver<ResolversTypes["RolesTypes"], ParentType, ContextType>;
   phone?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
   city?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
-  rate?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  ratesValue?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
+  ratesCount?: Resolver<ResolversTypes["Int"], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes["Date"], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes["Date"]>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -385,22 +451,53 @@ export type QueryResolvers<
     ContextType
   >;
   User?: Resolver<
-    Maybe<ResolversTypes["UsersMVC"]>,
+    ResolversTypes["UsersMVC"],
     ParentType,
     ContextType,
     RequireFields<QueryUserArgs, "id">
   >;
 };
 
+export type MutationResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes["Mutation"] = ResolversParentTypes["Mutation"]
+> = {
+  createUser?: Resolver<
+    ResolversTypes["UsersMVC"],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateUserArgs, "data">
+  >;
+  updateUserData?: Resolver<
+    Maybe<ResolversTypes["UsersMVC"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserDataArgs, "id" | "data">
+  >;
+  updateUserPassword?: Resolver<
+    Maybe<ResolversTypes["UsersMVC"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserPasswordArgs, "id" | "data">
+  >;
+  updateUserRate?: Resolver<
+    Maybe<ResolversTypes["UsersMVC"]>,
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserRateArgs, "id" | "data">
+  >;
+};
+
 export type Resolvers<ContextType = any> = {
   Date?: GraphQLScalarType;
   AuctionItemsMVC?: AuctionItemsMvcResolvers<ContextType>;
-  AuctionMVC?: AuctionMvcResolvers<ContextType>;
+  AuctionsMVC?: AuctionsMvcResolvers<ContextType>;
   CurrencyMVC?: CurrencyMvcResolvers<ContextType>;
   DeliveryTypesMVC?: DeliveryTypesMvcResolvers<ContextType>;
   OpinionsMVC?: OpinionsMvcResolvers<ContextType>;
   UsersMVC?: UsersMvcResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
 };
 
 /**
@@ -414,14 +511,52 @@ export type UserQueryVariables = Exact<{
 }>;
 
 export type UserQuery = {
-  User?: Maybe<
-    Pick<UsersMvc, "firstName" | "lastName" | "email" | "phone" | "rate">
+  User: Pick<
+    UsersMvc,
+    "firstName" | "lastName" | "email" | "phone" | "ratesValue" | "ratesCount"
+  >;
+};
+
+export type UpdateUserDataMutationVariables = Exact<{
+  id: Scalars["ID"];
+  data: UpdateUserDataInput;
+}>;
+
+export type UpdateUserDataMutation = {
+  updateUserData?: Maybe<
+    Pick<
+      UsersMvc,
+      | "firstName"
+      | "lastName"
+      | "email"
+      | "password"
+      | "phone"
+      | "city"
+      | "createdAt"
+    >
   >;
 };
 
 export type IndexQueryVariables = Exact<{ [key: string]: never }>;
 
 export type IndexQuery = { allUsers: Array<Pick<UsersMvc, "id">> };
+
+export type CreateUserMutationVariables = Exact<{
+  data: CreateUserDataInput;
+}>;
+
+export type CreateUserMutation = {
+  createUser: Pick<
+    UsersMvc,
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "password"
+    | "phone"
+    | "city"
+    | "createdAt"
+  >;
+};
 
 export const UserDocument = gql`
   query User($id: ID!) {
@@ -430,7 +565,8 @@ export const UserDocument = gql`
       lastName
       email
       phone
-      rate
+      ratesValue
+      ratesCount
     }
   }
 `;
@@ -475,6 +611,61 @@ export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = ApolloReactCommon.QueryResult<
   UserQuery,
   UserQueryVariables
+>;
+export const UpdateUserDataDocument = gql`
+  mutation updateUserData($id: ID!, $data: UpdateUserDataInput!) {
+    updateUserData(id: $id, data: $data) {
+      firstName
+      lastName
+      email
+      password
+      phone
+      city
+      createdAt
+    }
+  }
+`;
+export type UpdateUserDataMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateUserDataMutation,
+  UpdateUserDataMutationVariables
+>;
+
+/**
+ * __useUpdateUserDataMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserDataMutation, { data, loading, error }] = useUpdateUserDataMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateUserDataMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateUserDataMutation,
+    UpdateUserDataMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateUserDataMutation,
+    UpdateUserDataMutationVariables
+  >(UpdateUserDataDocument, baseOptions);
+}
+export type UpdateUserDataMutationHookResult = ReturnType<
+  typeof useUpdateUserDataMutation
+>;
+export type UpdateUserDataMutationResult = ApolloReactCommon.MutationResult<UpdateUserDataMutation>;
+export type UpdateUserDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateUserDataMutation,
+  UpdateUserDataMutationVariables
 >;
 export const IndexDocument = gql`
   query Index {
@@ -526,4 +717,58 @@ export type IndexLazyQueryHookResult = ReturnType<typeof useIndexLazyQuery>;
 export type IndexQueryResult = ApolloReactCommon.QueryResult<
   IndexQuery,
   IndexQueryVariables
+>;
+export const CreateUserDocument = gql`
+  mutation createUser($data: CreateUserDataInput!) {
+    createUser(data: $data) {
+      firstName
+      lastName
+      email
+      password
+      phone
+      city
+      createdAt
+    }
+  }
+`;
+export type CreateUserMutationFn = ApolloReactCommon.MutationFunction<
+  CreateUserMutation,
+  CreateUserMutationVariables
+>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >(CreateUserDocument, baseOptions);
+}
+export type CreateUserMutationHookResult = ReturnType<
+  typeof useCreateUserMutation
+>;
+export type CreateUserMutationResult = ApolloReactCommon.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateUserMutation,
+  CreateUserMutationVariables
 >;

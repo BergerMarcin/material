@@ -49,6 +49,7 @@ Files server: Firestore
 
 ## Websites helped to developed
 https://medium.com/@otociulis/next-js-typescript-graphql-mongodb-%EF%B8%8F-7c342319206b
+https://medium.com/@otociulis/next-js-typescript-graphql-mongodb-%EF%B8%8F-72f46526cda7
 
 ### React
 
