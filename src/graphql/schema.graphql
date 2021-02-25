@@ -1,0 +1,68 @@
+enum RolesTypes {SUPERADMIN, ADMIN, USER}
+
+scalar Date
+
+type AuctionItemsMVC {
+    id: ID!
+    auction_id: ID!
+    delivery_id: ID!
+    position: Float!
+    name: String!
+    quantity: Float!
+    description: String
+    imgUrls: [String]!
+    createdAt: Date!
+}
+
+type AuctionMVC {
+    id: ID!
+    user_id: ID!
+    name: String!
+    description: String
+    imgUrl: String!
+    startDate: Date!
+    endDate: Date!
+    createdAt: Date!
+}
+
+type CurrencyMVC {
+    id: ID!
+    name: String!
+    valuePln: Float!
+    apiUrl: String
+    jsonProperty: String
+    createdAt: Date!
+    updatedAt: Date!
+}
+
+type DeliveryTypesMVC {
+    id: ID!
+    user_id: ID!
+    name: String!
+    description: String
+    price: Float
+    currencyId: ID!
+}
+
+type OpinionsMVC {
+    id: ID!
+    auction_id: ID!
+    nick: String!
+    description: String
+    rate: Int!
+    createdAt: Date!
+}
+
+type UsersMVC {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    password: String!
+    role: RolesTypes!
+    phone: String!
+    city: String!
+    rate: Int!
+    createdAt: Date!
+    updatedAt: Date!
+}
