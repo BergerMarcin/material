@@ -88,29 +88,27 @@ type Query {
 }
 
 type Mutation {
-    createUser(data: CreateUserDataInput!): UsersMVC!
-    updateUserData(id: ID!, data: UpdateUserDataInput!): UsersMVC
+    createUser(data: CreateUserInput!): UsersMVC!
+    updateUserBasicData(id: ID!, data: UpdateUserBasicDataInput!): UsersMVC
     updateUserPassword(id: ID!, data: UpdateUserPasswordInput!): UsersMVC
     updateUserRate(id: ID!, data: UpdateUserRateInput!): UsersMVC
 }
 
-input CreateUserDataInput {
+input CreateUserInput {
     firstName: String!
     lastName: String!
     email: String!
     password: String!
     phone: String!
     city: String!
-    createdAt: Date!
 }
 
-input UpdateUserDataInput {
+input UpdateUserBasicDataInput {
     firstName: String!
     lastName: String!
     email: String!
     phone: String!
     city: String!
-    updatedAt: Date!
 }
 
 input UpdateUserPasswordInput {

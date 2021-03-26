@@ -111,18 +111,18 @@ export type QueryUserArgs = {
 
 export type Mutation = {
   createUser: UsersMvc;
-  updateUserData?: Maybe<UsersMvc>;
+  updateUserBasicData?: Maybe<UsersMvc>;
   updateUserPassword?: Maybe<UsersMvc>;
   updateUserRate?: Maybe<UsersMvc>;
 };
 
 export type MutationCreateUserArgs = {
-  data: CreateUserDataInput;
+  data: CreateUserInput;
 };
 
-export type MutationUpdateUserDataArgs = {
+export type MutationUpdateUserBasicDataArgs = {
   id: Scalars["ID"];
-  data: UpdateUserDataInput;
+  data: UpdateUserBasicDataInput;
 };
 
 export type MutationUpdateUserPasswordArgs = {
@@ -135,23 +135,21 @@ export type MutationUpdateUserRateArgs = {
   data: UpdateUserRateInput;
 };
 
-export type CreateUserDataInput = {
+export type CreateUserInput = {
   firstName: Scalars["String"];
   lastName: Scalars["String"];
   email: Scalars["String"];
   password: Scalars["String"];
   phone: Scalars["String"];
   city: Scalars["String"];
-  createdAt: Scalars["Date"];
 };
 
-export type UpdateUserDataInput = {
+export type UpdateUserBasicDataInput = {
   firstName: Scalars["String"];
   lastName: Scalars["String"];
   email: Scalars["String"];
   phone: Scalars["String"];
   city: Scalars["String"];
-  updatedAt: Scalars["Date"];
 };
 
 export type UpdateUserPasswordInput = {
@@ -293,8 +291,8 @@ export type ResolversTypes = {
   UsersMVC: ResolverTypeWrapper<UsersMvc>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
-  CreateUserDataInput: CreateUserDataInput;
-  UpdateUserDataInput: UpdateUserDataInput;
+  CreateUserInput: CreateUserInput;
+  UpdateUserBasicDataInput: UpdateUserBasicDataInput;
   UpdateUserPasswordInput: UpdateUserPasswordInput;
   UpdateUserRateInput: UpdateUserRateInput;
   Boolean: ResolverTypeWrapper<Scalars["Boolean"]>;
@@ -315,8 +313,8 @@ export type ResolversParentTypes = {
   UsersMVC: UsersMvc;
   Query: {};
   Mutation: {};
-  CreateUserDataInput: CreateUserDataInput;
-  UpdateUserDataInput: UpdateUserDataInput;
+  CreateUserInput: CreateUserInput;
+  UpdateUserBasicDataInput: UpdateUserBasicDataInput;
   UpdateUserPasswordInput: UpdateUserPasswordInput;
   UpdateUserRateInput: UpdateUserRateInput;
   Boolean: Scalars["Boolean"];
@@ -468,11 +466,11 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateUserArgs, "data">
   >;
-  updateUserData?: Resolver<
+  updateUserBasicData?: Resolver<
     Maybe<ResolversTypes["UsersMVC"]>,
     ParentType,
     ContextType,
-    RequireFields<MutationUpdateUserDataArgs, "id" | "data">
+    RequireFields<MutationUpdateUserBasicDataArgs, "id" | "data">
   >;
   updateUserPassword?: Resolver<
     Maybe<ResolversTypes["UsersMVC"]>,
@@ -513,26 +511,26 @@ export type UserQueryVariables = Exact<{
 export type UserQuery = {
   User: Pick<
     UsersMvc,
-    "firstName" | "lastName" | "email" | "phone" | "ratesValue" | "ratesCount"
+    | "firstName"
+    | "lastName"
+    | "email"
+    | "phone"
+    | "city"
+    | "ratesValue"
+    | "ratesCount"
   >;
 };
 
-export type UpdateUserDataMutationVariables = Exact<{
+export type UpdateUserBasicDataMutationVariables = Exact<{
   id: Scalars["ID"];
-  data: UpdateUserDataInput;
+  data: UpdateUserBasicDataInput;
 }>;
 
-export type UpdateUserDataMutation = {
-  updateUserData?: Maybe<
+export type UpdateUserBasicDataMutation = {
+  updateUserBasicData?: Maybe<
     Pick<
       UsersMvc,
-      | "firstName"
-      | "lastName"
-      | "email"
-      | "password"
-      | "phone"
-      | "city"
-      | "createdAt"
+      "firstName" | "lastName" | "email" | "password" | "phone" | "city"
     >
   >;
 };
@@ -542,19 +540,13 @@ export type IndexQueryVariables = Exact<{ [key: string]: never }>;
 export type IndexQuery = { allUsers: Array<Pick<UsersMvc, "id">> };
 
 export type CreateUserMutationVariables = Exact<{
-  data: CreateUserDataInput;
+  data: CreateUserInput;
 }>;
 
 export type CreateUserMutation = {
   createUser: Pick<
     UsersMvc,
-    | "firstName"
-    | "lastName"
-    | "email"
-    | "password"
-    | "phone"
-    | "city"
-    | "createdAt"
+    "firstName" | "lastName" | "email" | "password" | "phone" | "city"
   >;
 };
 
@@ -565,6 +557,7 @@ export const UserDocument = gql`
       lastName
       email
       phone
+      city
       ratesValue
       ratesCount
     }
@@ -612,60 +605,59 @@ export type UserQueryResult = ApolloReactCommon.QueryResult<
   UserQuery,
   UserQueryVariables
 >;
-export const UpdateUserDataDocument = gql`
-  mutation updateUserData($id: ID!, $data: UpdateUserDataInput!) {
-    updateUserData(id: $id, data: $data) {
+export const UpdateUserBasicDataDocument = gql`
+  mutation UpdateUserBasicData($id: ID!, $data: UpdateUserBasicDataInput!) {
+    updateUserBasicData(id: $id, data: $data) {
       firstName
       lastName
       email
       password
       phone
       city
-      createdAt
     }
   }
 `;
-export type UpdateUserDataMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateUserDataMutation,
-  UpdateUserDataMutationVariables
+export type UpdateUserBasicDataMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateUserBasicDataMutation,
+  UpdateUserBasicDataMutationVariables
 >;
 
 /**
- * __useUpdateUserDataMutation__
+ * __useUpdateUserBasicDataMutation__
  *
- * To run a mutation, you first call `useUpdateUserDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUserDataMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateUserBasicDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserBasicDataMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateUserDataMutation, { data, loading, error }] = useUpdateUserDataMutation({
+ * const [updateUserBasicDataMutation, { data, loading, error }] = useUpdateUserBasicDataMutation({
  *   variables: {
  *      id: // value for 'id'
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useUpdateUserDataMutation(
+export function useUpdateUserBasicDataMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    UpdateUserDataMutation,
-    UpdateUserDataMutationVariables
+    UpdateUserBasicDataMutation,
+    UpdateUserBasicDataMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    UpdateUserDataMutation,
-    UpdateUserDataMutationVariables
-  >(UpdateUserDataDocument, baseOptions);
+    UpdateUserBasicDataMutation,
+    UpdateUserBasicDataMutationVariables
+  >(UpdateUserBasicDataDocument, baseOptions);
 }
-export type UpdateUserDataMutationHookResult = ReturnType<
-  typeof useUpdateUserDataMutation
+export type UpdateUserBasicDataMutationHookResult = ReturnType<
+  typeof useUpdateUserBasicDataMutation
 >;
-export type UpdateUserDataMutationResult = ApolloReactCommon.MutationResult<UpdateUserDataMutation>;
-export type UpdateUserDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateUserDataMutation,
-  UpdateUserDataMutationVariables
+export type UpdateUserBasicDataMutationResult = ApolloReactCommon.MutationResult<UpdateUserBasicDataMutation>;
+export type UpdateUserBasicDataMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateUserBasicDataMutation,
+  UpdateUserBasicDataMutationVariables
 >;
 export const IndexDocument = gql`
   query Index {
@@ -719,7 +711,7 @@ export type IndexQueryResult = ApolloReactCommon.QueryResult<
   IndexQueryVariables
 >;
 export const CreateUserDocument = gql`
-  mutation createUser($data: CreateUserDataInput!) {
+  mutation CreateUser($data: CreateUserInput!) {
     createUser(data: $data) {
       firstName
       lastName
@@ -727,7 +719,6 @@ export const CreateUserDocument = gql`
       password
       phone
       city
-      createdAt
     }
   }
 `;

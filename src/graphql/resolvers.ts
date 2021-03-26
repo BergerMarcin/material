@@ -1,4 +1,4 @@
-import {Resolvers, UsersMvc} from "./types.tsx";
+import {Resolvers, RolesTypes, UsersMvc} from "./types";
 
 let store: UsersMvc[] = [
   {
@@ -7,7 +7,7 @@ let store: UsersMvc[] = [
     lastName: "Berger Apollo",
     email: "marcin.berger@wp.pl",
     password: "1234",
-    role: "SUPERADMIN",
+    role: RolesTypes.Superadmin,
     phone: "43523452345",
     city: "Błonie",
     ratesValue: 5,
@@ -21,7 +21,7 @@ let store: UsersMvc[] = [
     lastName: "Berger Apollo",
     email: "marian.berger@wp.pl",
     password: "1234",
-    role: "ADMIN",
+    role: RolesTypes.Admin,
     phone: "433452345",
     city: "Warszawa",
     ratesValue: 18,
@@ -35,7 +35,7 @@ let store: UsersMvc[] = [
     lastName: "Berger Apollo",
     email: "wacław.berger@wp.pl",
     password: "1234",
-    role: "ADMIN",
+    role: RolesTypes.Admin,
     phone: "433452345",
     city: "Ryki",
     ratesValue: 19,
@@ -58,21 +58,26 @@ const resolvers: Resolvers = {
       let newUser = {} as UsersMvc;
       newUser = {
         ...newUser,
+        ...data,
         id: Math.floor(Math.random() * 10000).toString(),
-        ...data
+        createdAt: Date.now(),
+        updatedAt: null
       }
       store = store.concat(newUser);
       return newUser;
     },
 
-    updateUserData: (_: any, {id, data}) => {
-      const user = store.find(u => u.id === id);
+    updateUserBasicData: (_: any, {id, data}) => {
+      let user = store.find(u => u.id === id);
       if (user) {
-        store = store.filter(u => u.id !== id).concat({
+        user = {
           ...user,
-          ...data
-        });
+          ...data,
+          updatedAt: Date.now()
+        }
+        store = store.filter(u => u.id !== id).concat(user);
       }
+      console.log(user);
       return user;
     }
   }

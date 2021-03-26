@@ -2,12 +2,19 @@ overwrite: true
 hooks:
   afterAllFileWrite:
     - prettier --write
-#watch: true    # show changes (slow down generation process significantly)
+#watch: true                    # show changes (WARNING: Generation process slows down significantly in case watch is true)
 schema:
   - ./src/graphql/schema.graphql
 generates:
-  ./src/graphql/types.tsx:
-    documents: # list of files being checked for queries
+  ./src/dao/types.ts:           # creating types.ts with DAO for FRONTEND (to keep backend layer isolated from frontend layer)
+    plugins:
+      - typescript
+      - typescript-mongodb
+    config:
+      skipTypename: true
+      dbTypeSuffix: DbObject
+  ./src/graphql/types.tsx:      # creating types.tsx for GraphQL (for BACKEND and FRONTEND queries, mutations, hooks)
+    documents:                  # list of files being checked for queries
       - ./pages/**/*.ts*
       - ./components/**/*.ts*
     plugins:

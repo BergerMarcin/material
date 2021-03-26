@@ -1,8 +1,11 @@
-import {CreateUserDataInput, useIndexQuery, useCreateUserMutation} from "../src/graphql/types";
+import {
+  useIndexQuery,
+  useCreateUserMutation,
+  CreateUserInput, RolesTypes
+} from "../src/graphql/types";
 import {gql} from "@apollo/client";
 import User from "../components/User";
-import {useState, ChangeEvent} from "react";
-import {UserDAO} from "../src/dao/UserDAO";
+import {useState, ChangeEvent, useEffect} from "react";
 
 gql`
     query Index {
@@ -10,7 +13,7 @@ gql`
             id
         }
     }
-    mutation createUser($data: CreateUserDataInput!) {
+    mutation CreateUser($data: CreateUserInput!) {
         createUser(data: $data) {
             firstName
             lastName
@@ -18,34 +21,59 @@ gql`
             password
             phone
             city
-            createdAt
         }
     }
 `;
 
 const Index = () => {
+  // MOUNTED (at mounted/DidMount)
   const {data, loading} = useIndexQuery();
 
-  const allUsers = data?.allUsers
-    ?.slice()
-    .sort((a, b) => a.id.localeCompare(b.id));
+  // STATES & their hooks for update
+  const [allUsers, setAllUsers] = useState([]);
 
+  // WATCHERS on props & states update
+  useEffect(() => {
+    setAllUsers(data?.allUsers?.slice()
+        .sort((a, b) => a.id.localeCompare(b.id))
+      || []);
+  }, [data?.allUsers]);
+
+  // COMPUTED
   const allUsersElements = allUsers?.map((u) => (
     <User id={u.id} key={u.id}/>
   ));
 
+  // GraphQL HOOKS for methods
+  const [createUserMutation] = useCreateUserMutation();
+
+  // METHODS
   const clickHandlerNewUser = (): void => {
     console.log('Index. createUser. New User button clicked');
-    const userDAO = new UserDAO() as CreateUserDataInput
-    console.log('Index. userDAO: ', userDAO);
-    userDAO.firstName = 'Michał'
-    console.log('Index. userDAO: ', userDAO);
-    const {data, creating} = useCreateUserMutation(userDAO)
+    const user: CreateUserInput = {} as CreateUserInput
+    console.log('Index. user BEFORE: ', user)
+    user.firstName = 'Michał'
+    user.lastName = "Siekierski Apollo"
+    user.email = "ms@wp.pl"
+    user.password = "1234"
+    user.phone = "433452345"
+    user.city = "Błonie"
+    console.log('Index. user AFTER INPUT DATA: ', user)
+    console.log('Index. allUsers BEFORE: ', allUsers)
+    createUserMutation({
+      variables: {
+        data: user,
+      },
+    }).then(newUser => {
+      console.log('Index. newUser: ', newUser)
+      console.log('Index. allUsers AFTER MUTATION: ', allUsers)
+    })
   }
 
+  // TEMPLATE
   return loading ? null : allUsersElements.length > 0 ? (
     <>
-      <table border={3}>
+      <table style={{border: 3}}>
         <tbody>{allUsersElements}</tbody>
       </table>
       <button onClick={clickHandlerNewUser}>New User</button>
