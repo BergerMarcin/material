@@ -3,9 +3,9 @@ import {
   useIndexQuery
 } from "../src/graphql/types";
 import {gql} from "@apollo/client";
-import User from "../components/User";
-import NewUser from "../components/NewUser";
-import {useState, ChangeEvent, useEffect} from "react";
+import User from "../components/User/User";
+import NewUser from "../components/User/NewUser";
+import {useState, useEffect} from "react";
 
 gql`
     query Index {
@@ -40,13 +40,13 @@ const Index = () => {
     setAllUserIds((prevAllUserIds: String[]): String[] => {
       return [...prevAllUserIds, newUserId]
     })
-    console.log('Index. allUserIds AFTER MUTATION: ', allUserIds)
   }
 
   // TEMPLATE
   return loading ? null : allUserElements.length > 0 ? (
     <>
       <NewUser updateAllUserIds={updateAllUserIds}/>
+      <hr/>
       <table style={{border: 3}}>
         <tbody>{allUserElements}</tbody>
       </table>

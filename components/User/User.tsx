@@ -2,12 +2,11 @@ import { gql } from "@apollo/client"
 import {
   Scalars,
   UsersMvc,
-  CreateUserInput,
   UpdateUserBasicDataInput,
   useUserQuery,
   useUpdateUserBasicDataMutation
-} from "../src/graphql/types"
-import {ChangeEvent, useEffect, useState} from "react"
+} from "../../src/graphql/types"
+import {useEffect, useState} from "react"
 
 interface Props {
   id: Scalars["ID"];
@@ -55,8 +54,6 @@ const User = (props: Props) => {
 
   // WATCHERS on props & states update
   useEffect(() => {
-    setTimeout(() => {console.log('useEffect on user after 2s. data?.user: ', data?.User.firstName);}, 2000)
-    console.log('useEffect on user.  data?.user: ', data?.User.firstName);
     setUser({...data?.User} as UsersMvc || {} as UsersMvc);
   }, [data?.User]);
   useEffect(() => {
@@ -78,8 +75,8 @@ const User = (props: Props) => {
     if (Object.keys(result).includes(key)) result[key] = value
     return result
   }
-  const onChangeHandlerLocalPhone = (e: ChangeEvent) => {
-    const phone = (e.target as HTMLInputElement).value;
+  const onChangeHandlerLocalPhone = (event): void => {
+    const phone = event.target.value;
     setLocalPhone(phone);
     console.log('User.tsx. updatedUser: ', updatedUserBasicDataInput("phone", phone))
     updateUserBasicDataMutation({
