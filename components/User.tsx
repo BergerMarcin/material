@@ -40,7 +40,7 @@ gql`
 const User = (props: Props) => {
   // PROPS
   const { id } = props;
-  console.log('User. id: ', id);
+  console.log('User. PROPS: id: ', id);
 
   // MOUNTED (at mounted/DidMount)
   const { data, loading } = useUserQuery({
@@ -107,7 +107,7 @@ const User = (props: Props) => {
       </>
     );
   }
-  return <tr>{content}</tr>;
-};
+  return (<tr>{content}</tr>)
+}
 
-export default User;
+export default User

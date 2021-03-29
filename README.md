@@ -67,10 +67,10 @@ Diagram (from IntelliJ DB plugin)
 ![](./Material_DB_shemas_20210329.jpg)
 
 ## Acc. CODE catalogue structure
-### ./src/dao (types.ts)
+### ./src/dao (types.ts) - to ISOLATE BACKEND's TYPEs
 DAO types for DB - for DB Mongo 
 <br/>(see details @ `codegen.yaml`)
 
-### ./src/graphql (schema.graphql, types.tsx. resolvers.ts)
+### ./src/graphql (schema.graphql, types.tsx. resolvers.ts) - for BACKEND & FRONT-REACT
 Main schema.graphql with types.tsx and resolvers.ts for both BACKEND & FRONTEND (with Hooks for REACT)
 <br/>(see details @ `codegen.yaml`)
