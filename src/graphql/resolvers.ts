@@ -55,15 +55,18 @@ const resolvers: Resolvers = {
 
   Mutation: {
     createUser: (_: any, { data }) => {
-      let newUser = {} as UsersMvc;
-      newUser = {
-        ...newUser,
+      let newUser: UsersMvc = {
         ...data,
         id: Math.floor(Math.random() * 10000).toString(),
+        role: RolesTypes.User,
+        ratesValue: 0,
+        ratesCount: 0,
         createdAt: Date.now(),
         updatedAt: null
       }
       store = store.concat(newUser);
+      console.log('createUser. Created newUser: ', newUser);
+      console.log('createUser. store: ', store);
       return newUser;
     },
 
@@ -77,7 +80,7 @@ const resolvers: Resolvers = {
         }
         store = store.filter(u => u.id !== id).concat(user);
       }
-      console.log(user);
+      console.log('updateUserBasicData. Updated user: ', user);
       return user;
     }
   }

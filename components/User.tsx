@@ -3,10 +3,10 @@ import {
   Scalars,
   UsersMvc,
   CreateUserInput,
-  useUpdateUserBasicDataMutation,
-  useUserQuery
+  UpdateUserBasicDataInput,
+  useUserQuery,
+  useUpdateUserBasicDataMutation
 } from "../src/graphql/types"
-import {UpdateUserBasicDataInput} from "../src/dao/types"
 import {ChangeEvent, useEffect, useState} from "react"
 
 interface Props {
@@ -50,9 +50,15 @@ const User = (props: Props) => {
   });
 
   // STATES & their hooks for update
+  const [user, setUser] = useState({} as UsersMvc)
   const [localPhone, setLocalPhone] = useState('');
 
   // WATCHERS on props & states update
+  useEffect(() => {
+    setTimeout(() => {console.log('useEffect on user after 2s. data?.user: ', data?.User.firstName);}, 2000)
+    console.log('useEffect on user.  data?.user: ', data?.User.firstName);
+    setUser({...data?.User} as UsersMvc || {} as UsersMvc);
+  }, [data?.User]);
   useEffect(() => {
     setLocalPhone(data?.User?.phone || '');
   }, [data?.User?.phone]);
@@ -63,11 +69,11 @@ const User = (props: Props) => {
   // METHODS
   const updatedUserBasicDataInput = (key: string, value: any): UpdateUserBasicDataInput => {
     let result: UpdateUserBasicDataInput = {
-      firstName: data?.User?.firstName,
-      lastName: data?.User?.lastName,
-      email: data?.User?.email,
-      phone: data?.User?.phone,
-      city: data?.User?.city
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
+      phone: user?.phone,
+      city: user?.city
     }
     if (Object.keys(result).includes(key)) result[key] = value
     return result
@@ -86,16 +92,16 @@ const User = (props: Props) => {
   };
 
   // TEMPLATE
-  let content = <td colSpan={5}>Loading ...</td>;
+  let content = <td colSpan={5}>Loading ... (an id: {id} of {user?.firstName})</td>;
   if (!loading && data) {
     const { firstName, lastName, email, phone } = data.User
     const rate = data.User.ratesCount > 0
       ? Math.round(100 * data.User.ratesValue / data.User.ratesCount) / 100 : 'brak ocen'
     content = (
       <>
-        <td>{firstName}</td>
-        <td>{lastName}</td>
-        <td>{email}</td>
+        <td>{user.firstName}</td>
+        <td>{user.lastName}</td>
+        <td>{user.email}</td>
         <td><input type="text" value={localPhone} onChange={onChangeHandlerLocalPhone}/></td>
         <td>{rate}</td>
       </>

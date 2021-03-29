@@ -58,3 +58,19 @@ https://nextjs.org/docs/getting-started
 ### GraphQL
 https://graphql.org/learn/schema/
 ### TypeScript
+
+<br/><hr/><br/>
+
+# Data structure
+## Acc. DB's Collections / Tables
+Diagram (from IntelliJ DB plugin)
+![](./Material_DB_shemas_20210329.jpg)
+
+## Acc. CODE catalogue structure
+### ./src/dao (types.ts)
+DAO types for DB - for DB Mongo 
+<br/>(see details @ `codegen.yaml`)
+
+### ./src/graphql (schema.graphql, types.tsx. resolvers.ts)
+Main schema.graphql with types.tsx and resolvers.ts for both BACKEND & FRONTEND (with Hooks for REACT)
+<br/>(see details @ `codegen.yaml`)

@@ -546,7 +546,7 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = {
   createUser: Pick<
     UsersMvc,
-    "firstName" | "lastName" | "email" | "password" | "phone" | "city"
+    "id" | "firstName" | "lastName" | "email" | "password" | "phone" | "city"
   >;
 };
 
@@ -713,6 +713,7 @@ export type IndexQueryResult = ApolloReactCommon.QueryResult<
 export const CreateUserDocument = gql`
   mutation CreateUser($data: CreateUserInput!) {
     createUser(data: $data) {
+      id
       firstName
       lastName
       email

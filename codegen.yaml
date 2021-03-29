@@ -6,7 +6,7 @@ hooks:
 schema:
   - ./src/graphql/schema.graphql
 generates:
-  ./src/dao/types.ts:           # creating types.ts with DAO for FRONTEND (to keep backend layer isolated from frontend layer)
+  ./src/dao/types.ts:           # creating types.ts with DAO for BACKEND (to keep backend layer isolated from frontend layer)
     plugins:
       - typescript
       - typescript-mongodb

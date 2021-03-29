@@ -15,6 +15,7 @@ gql`
     }
     mutation CreateUser($data: CreateUserInput!) {
         createUser(data: $data) {
+            id
             firstName
             lastName
             email
@@ -27,29 +28,36 @@ gql`
 
 const Index = () => {
   // MOUNTED (at mounted/DidMount)
-  const {data, loading} = useIndexQuery();
+  let {data, loading} = useIndexQuery()
 
   // STATES & their hooks for update
-  const [allUsers, setAllUsers] = useState([]);
+  const [allUserIds, setAllUserIds] = useState([])
+  const [allUserElements, setAllUserElements] = useState([])
 
   // WATCHERS on props & states update
   useEffect(() => {
-    setAllUsers(data?.allUsers?.slice()
-        .sort((a, b) => a.id.localeCompare(b.id))
+    console.log('useEffect on allUserIds.  data?.allUsers: ', data?.allUsers);
+    setAllUserIds(data?.allUsers?.map(d => d.id)
+        .slice()
+        .sort((a, b) => a.localeCompare(b))
       || []);
   }, [data?.allUsers]);
+  useEffect(() => {
+    console.log('useEffect on allUserElements.  allUserIds: ', allUserIds);
+    setAllUserElements(allUserIds?.map(uId => <User id={uId} key={uId}/>));
+  }, [allUserIds]);
 
-  // COMPUTED
-  const allUsersElements = allUsers?.map((u) => (
-    <User id={u.id} key={u.id}/>
-  ));
+  // // COMPUTED
+  // let allUsersElements = allUserIds?.map((uId) => (
+  //   <User id={uId} key={uId}/>
+  // ));
 
   // GraphQL HOOKS for methods
-  const [createUserMutation] = useCreateUserMutation();
+  const [createUserMutation] = useCreateUserMutation()
 
   // METHODS
   const clickHandlerNewUser = (): void => {
-    console.log('Index. createUser. New User button clicked');
+    console.log('Index. createUser. New User button clicked')
     const user: CreateUserInput = {} as CreateUserInput
     console.log('Index. user BEFORE: ', user)
     user.firstName = 'Michał'
@@ -59,22 +67,24 @@ const Index = () => {
     user.phone = "433452345"
     user.city = "Błonie"
     console.log('Index. user AFTER INPUT DATA: ', user)
-    console.log('Index. allUsers BEFORE: ', allUsers)
+    console.log('Index. allUserIds BEFORE: ', allUserIds)
     createUserMutation({
       variables: {
         data: user,
       },
     }).then(newUser => {
       console.log('Index. newUser: ', newUser)
-      console.log('Index. allUsers AFTER MUTATION: ', allUsers)
+      // {data, loading} = useIndexQuery()
+      setAllUserIds( (prevAllUserIds:String[]):String[] => {return [...prevAllUserIds, newUser.data.createUser.id]})
+      console.log('Index. allUserIds AFTER MUTATION: ', allUserIds)
     })
   }
 
   // TEMPLATE
-  return loading ? null : allUsersElements.length > 0 ? (
+  return loading ? null : allUserElements.length > 0 ? (
     <>
       <table style={{border: 3}}>
-        <tbody>{allUsersElements}</tbody>
+        <tbody>{allUserElements}</tbody>
       </table>
       <button onClick={clickHandlerNewUser}>New User</button>
     </>

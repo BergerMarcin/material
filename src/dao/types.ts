@@ -76,7 +76,7 @@ export type OpinionsMvc = {
 export type UsersMvc = {
   id: Scalars["ID"];
   firstName: Scalars["String"];
-  lastName: Scalars["String"];
+  lastName: Scalars["String"];RolesTypes
   email: Scalars["String"];
   password: Scalars["String"];
   role: RolesTypes;
